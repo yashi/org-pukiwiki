@@ -126,9 +126,10 @@ CONTENTS is its contents, as a string or nil.  INFO is ignored."
   "Transcode HEADLINE element into Pukiwiki format.
 CONTENTS is the headline contents."
   (let* ((level (org-export-get-relative-level headline info))
-	 (title (org-export-data (org-element-property :title headline) info)))
+	 (title (org-export-data (org-element-property :title headline) info))
+	 (limit (plist-get info :headline-levels)))
     (if (org-export-low-level-p headline info)
-	(concat (make-string (- level 3) ?-) " " title "\n"
+	(concat (make-string (- level limit) ?-) " " title "\n"
 		(when contents
 		    (replace-regexp-in-string "^-" "--" contents)))
       (concat (make-string level ?*) " " title "\n" contents))))
