@@ -194,22 +194,8 @@ Export is done in a buffer named \"*Org PUKIWIKI Export*\", which
 will be displayed when `org-export-show-temporary-export-buffer'
 is non-nil."
   (interactive)
-  (if async
-      (org-export-async-start
-	  (lambda (output)
-	    (with-current-buffer (get-buffer-create "*Org PUKIWIKI Export*")
-	      (erase-buffer)
-	      (insert output)
-	      (goto-char (point-min))
-	      (text-mode)
-	      (org-export-add-to-stack (current-buffer) 'pukiwiki)))
-	`(org-export-as 'pukiwiki ,subtreep ,visible-only))
-    (let ((outbuf
-	   (org-export-to-buffer
-	    'pukiwiki "*Org PUKIWIKI Export*" subtreep visible-only)))
-      (with-current-buffer outbuf (text-mode))
-      (when org-export-show-temporary-export-buffer
-	(switch-to-buffer-other-window outbuf)))))
+  (org-export-to-buffer 'pukiwiki "*Org PUKIWIKI Export*"
+    async subtreep visible-only nil nil (lambda () (text-mode))))
 
 ;;;###autoload
 (defun org-pukiwiki-export-to-pukiwiki (&optional async subtreep visible-only)
@@ -234,13 +220,7 @@ contents of hidden elements.
 Return output file name."
   (interactive)
   (let ((outfile (org-export-output-file-name ".txt" subtreep)))
-    (if async
-	(org-export-async-start
-	    (lambda (f) (org-export-add-to-stack f 'org))
-	  `(expand-file-name
-	    (org-export-to-file
-	     'pukiwiki ,outfile ,subtreep ,visible-only)))
-      (org-export-to-file 'pukiwiki outfile subtreep visible-only))))
+    (org-export-to-file 'pukiwiki outfile async subtreep visible-only)))
 
 (provide 'ox-pukiwiki)
 
