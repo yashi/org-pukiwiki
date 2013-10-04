@@ -46,7 +46,7 @@
     (drawer . (lambda (&rest args) ""))
     (dynamic-block . org-pukiwiki-identity)
     (entity . org-pukiwiki-identity)
-    (example-block . org-pukiwiki-identity)
+    (example-block . org-pukiwiki-example-block)
     (fixed-width . org-pukiwiki-identity)
     (footnote-definition . org-pukiwiki-identity)
     (footnote-reference . org-pukiwiki-identity)
@@ -180,6 +180,15 @@ CONTENTS is the headline contents."
   "Transcode TABLE CELL element into Pukiwiki format."
   (setq ox-puki-cell (1+ ox-puki-cell))
   (concat "| " contents " "))
+
+
+;;; Example Block
+(defun org-pukiwiki-example-block (example-block contents info)
+  "Transcode a EXAMPLE-BLOCK element into Pukiwiki format.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+  (let ((value (org-element-property :value example-block)))
+    (concat " " (replace-regexp-in-string "\n" "\n " value))))
 
 
 ;;;###autoload
