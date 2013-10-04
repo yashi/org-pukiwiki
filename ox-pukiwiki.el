@@ -85,7 +85,6 @@
     (underline . org-pukiwiki-identity)
     (verbatim . org-pukiwiki-identity)
     (verse-block . org-pukiwiki-identity))
-  :filters-alist '((:filter-final-output . org-pukiwiki-final-function))
   :menu-entry
   '(?p "Export to Pukiwiki"
        ((?p "As Pukiwiki buffer"
@@ -102,25 +101,40 @@
 CONTENTS is its contents, as a string or nil.  INFO is ignored."
   (org-export-expand blob contents))
 
-(defun org-pukiwiki-plain-list (blob contents info)
-  (setq contents (replace-regexp-in-string "^\\+" "++" contents))
-  (replace-regexp-in-string "^-" "--" contents))
+;;; List
+(defvar org-pukiwiki-list-bullets
+  '((unordered . ?-)
+    (ordered . ?+)))
 
-(defun org-pukiwiki-item (blob contents info)
-  (let* ((parent (org-export-get-parent blob))
-	 (type (org-element-property :type parent))
-	 (bullet (cond
-		  ((eq type 'unordered) "-")
-		  ((eq type 'ordered) "+"))))
-    (concat bullet " " contents)))
+(defun org-pukiwiki-plain-list (plain-list contents info)
+  "Transcode a PLAIN-LIST element into Pukiwiki format.
+CONTENTS is the contents of the list.  INFO is a plist holding
+contextual information."
+  contents)
 
-(defun org-pukiwiki-final-function (contents backend info)
-  ;; remove extra "-" and "+" generated from org-pukiwiki-plain-list
-  ;; and org-pukiwiki-item
-  (setq contents (replace-regexp-in-string "^--" "-" contents))
-  (setq contents (replace-regexp-in-string "^\\+\\+" "+" contents))
-  ;; truncate deeper list to the max
-  (replace-regexp-in-string "^----+" "---" contents))
+(defun org-pukiwiki-item-list-depth (item)
+  (let ((parent item)
+	(depth 0))
+    (while (and (setq parent (org-export-get-parent parent))
+		(cl-case (org-element-type parent)
+		  (item t)
+		  (plain-list (cl-incf depth)))))
+    depth))
+
+(defun org-pukiwiki-list-item-delimiter (item)
+  (let* ((plain-list (org-export-get-parent item))
+	 (type (org-element-property :type plain-list))
+	 (depth (org-pukiwiki-item-list-depth item))
+	 (bullet (cdr (assq type org-pukiwiki-list-bullets))))
+    (when bullet
+     (make-string depth bullet))))
+
+(defun org-pukiwiki-item (item contents info)
+  "Transcode an ITEM element into Pukiwiki format.
+CONTENTS holds the contents of the item.  INFO is a plist holding
+contextual information."
+  (format "%s %s" (org-pukiwiki-list-item-delimiter item) contents))
+
 
 (defun org-pukiwiki-headline (headline contents info)
   "Transcode HEADLINE element into Pukiwiki format.
@@ -129,9 +143,7 @@ CONTENTS is the headline contents."
 	 (title (org-export-data (org-element-property :title headline) info))
 	 (limit (plist-get info :headline-levels)))
     (if (org-export-low-level-p headline info)
-	(concat (make-string (- level limit) ?-) " " title "\n"
-		(when contents
-		    (replace-regexp-in-string "^-" "--" contents)))
+	(concat (make-string (- level limit) ?-) " " title "\n" contents)
       (concat (make-string level ?*) " " title "\n" contents))))
 
 
