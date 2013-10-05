@@ -36,10 +36,10 @@
 
 (org-export-define-backend 'pukiwiki
   '((babel-call . org-pukiwiki-identity)
-    (bold . org-pukiwiki-identity)
+    (bold . org-pukiwiki-bold)
     (center-block . org-pukiwiki-identity)
     (clock . org-pukiwiki-identity)
-    (code . org-pukiwiki-identity)
+    (code . org-pukiwiki-code)
     (comment . (lambda (&rest args) ""))
     (comment-block . (lambda (&rest args) ""))
     (diary-sexp . org-pukiwiki-identity)
@@ -55,7 +55,7 @@
     (inline-babel-call . org-pukiwiki-identity)
     (inline-src-block . org-pukiwiki-identity)
     (inlinetask . org-pukiwiki-identity)
-    (italic . org-pukiwiki-identity)
+    (italic . org-pukiwiki-italic)
     (item . org-pukiwiki-item)
     (keyword . org-pukiwiki-keyword)
     (latex-environment . org-pukiwiki-identity)
@@ -74,7 +74,7 @@
     (special-block . org-pukiwiki-identity)
     (src-block . org-pukiwiki-identity)
     (statistics-cookie . org-pukiwiki-identity)
-    (strike-through . org-pukiwiki-identity)
+    (strike-through . org-pukiwiki-strike-through)
     (subscript . org-pukiwiki-identity)
     (superscript . org-pukiwiki-identity)
     (table . org-pukiwiki-table)
@@ -82,8 +82,8 @@
     (table-row . org-pukiwiki-table-row)
     (target . org-pukiwiki-identity)
     (timestamp . org-pukiwiki-identity)
-    (underline . org-pukiwiki-identity)
-    (verbatim . org-pukiwiki-identity)
+    (underline . org-pukiwiki-underline)
+    (verbatim . org-pukiwiki-verbatim)
     (verse-block . org-pukiwiki-identity))
   :menu-entry
   '(?p "Export to Pukiwiki"
@@ -100,6 +100,27 @@
   "Transcode BLOB element or object back into Org syntax.
 CONTENTS is its contents, as a string or nil.  INFO is ignored."
   (org-export-expand blob contents))
+
+
+;;; Inline Text Format
+(defun org-pukiwiki-bold (bold contents info)
+  (concat "''" contents "''"))
+
+(defun org-pukiwiki-code (code contents info)
+  (org-element-property :value code))
+
+(defun org-pukiwiki-italic (italic contents info)
+  (concat "'''" contents "'''"))
+
+(defun org-pukiwiki-strike-through (strike-through contents info)
+  (concat "%%" contents "%%"))
+
+(defun org-pukiwiki-underline (underline contents info)
+  (concat "%%%" contents "%%%"))
+
+(defun org-pukiwiki-verbatim (verbatim contents info)
+  (org-element-property :value verbatim))
+
 
 ;;; List
 (defvar org-pukiwiki-list-bullets
