@@ -135,7 +135,7 @@ CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
   (format "%s %s" (org-pukiwiki-list-item-delimiter item) contents))
 
-
+;;; Headline
 (defun org-pukiwiki-headline (headline contents info)
   "Transcode HEADLINE element into Pukiwiki format.
 CONTENTS is the headline contents."
@@ -144,7 +144,7 @@ CONTENTS is the headline contents."
 	 (limit (plist-get info :headline-levels)))
     (if (org-export-low-level-p headline info)
 	(concat (make-string (- level limit) ?-) " " title "\n" contents)
-      (concat (make-string level ?*) " " title "\n" contents))))
+      (concat "\n" (make-string level ?*) " " title "\n" contents))))
 
 
 (defun org-pukiwiki-keyword (keyword contents info)
