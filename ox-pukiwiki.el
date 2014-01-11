@@ -3,6 +3,8 @@
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
 ;; Author: Yasushi SHOJI <yasushi.shoji@gmail.com>
+;; URL: https://github.com/yashi/org-pukiwiki
+;; Package-Requires: ((org "8.2.5c"))
 ;; Keywords: org, pukiwiki
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
