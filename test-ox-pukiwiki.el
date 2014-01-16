@@ -5,43 +5,50 @@
 ;; Author: Yasushi SHOJI <yasushi.shoji at gmail dot com>
 
 ;;; Code:
-
+(require 'org-test)
 (require 'ox-pukiwiki)
 
 (unless (featurep 'ox)
   (signal 'missing-test-dependency "org-export"))
 
+(defun org-pukiwiki-test-transcode-body (str1 str2)
+  (should (equal (org-test-with-temp-text str1
+                                          (org-export-as 'pukiwiki nil nil t))
+		 str2)))
+
+;;; Heading
 (ert-deftest test-ox-pukiwiki/headline ()
   "Test Headline conversion."
-  (should
-   (string=
-    "* H1\n** H2\n** H3\n"
-    (org-test-with-parsed-data "* H1\n** H2\n** H3"
-      (org-test-with-backend pw
-	(org-export-as 'pw nil nil nil nil))))))
+  (org-pukiwiki-test-transcode-body "
+* H1
+** H2
+** H3"
 
+   "\n* H1
+
+** H2
+
+** H3
+"))
+
+;;; List
 (ert-deftest test-ox-pukiwiki/plain-list ()
   "Test plain list conversion."
 
   ;; simple list
-  (org-test-with-temp-text "- a\n- b"
-    (org-test-with-backend 'pukiwiki
-      (should
-       (string-match "- a\n- b"
-	(org-export-as 'pukiwiki nil nil nil nil)))))
+  (org-pukiwiki-test-transcode-body
+   "- a\n- b"
+   "- a\n- b\n")
 
   ;; second level list
-  (org-test-with-temp-text "
+  (org-pukiwiki-test-transcode-body
+   "
 - list 1
   - list 2
 "
-    (org-test-with-backend pukiwiki
-      (should
-       (string-match "- list 1
--- list 2"
-	(org-export-as 'pukiwiki nil nil nil nil)))))
 
-)
+"- list 1
+-- list 2\n"))
 
 (provide 'test-ox-pukiwiki)
 ;;; test-ox-pukiwiki.el end here
