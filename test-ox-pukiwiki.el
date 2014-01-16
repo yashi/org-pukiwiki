@@ -50,5 +50,23 @@
 "- list 1
 -- list 2\n"))
 
+
+;;; Comment
+(ert-deftest test-ox-pukiwiki/comment ()
+  "Test comment."
+
+  (org-pukiwiki-test-transcode-body
+   "# comment"
+   "// comment\n")
+
+  (org-pukiwiki-test-transcode-body
+   "
+# multi-line comment
+# should work as expected"
+
+"// multi-line comment
+// should work as expected
+"))
+
 (provide 'test-ox-pukiwiki)
 ;;; test-ox-pukiwiki.el end here

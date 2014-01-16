@@ -40,7 +40,7 @@
     (center-block . org-pukiwiki-identity)
     (clock . org-pukiwiki-identity)
     (code . org-pukiwiki-code)
-    (comment . (lambda (&rest args) ""))
+    (comment . org-pukiwiki-comment)
     (comment-block . (lambda (&rest args) ""))
     (diary-sexp . org-pukiwiki-identity)
     (drawer . (lambda (&rest args) ""))
@@ -211,6 +211,19 @@ information."
   (let ((value (org-element-property :value example-block)))
     (concat " " (replace-regexp-in-string "\n" "\n " value))))
 
+
+;;; Comment
+(defun org-pukiwiki-comment (comment contents info)
+  "Transcode a COMMENT element into Pukiwiki format.
+CONTENS is the text in the comment.  INFO is a plist hodling
+contextual information."
+  (with-temp-buffer
+    (insert (org-element-property :value comment))
+    (goto-char (point-min))
+    (while (not (eobp))
+      (insert "// ")
+      (forward-line))
+    (buffer-string)))
 
 ;;;###autoload
 (defun org-pukiwiki-export-as-pukiwiki (&optional async subtreep visible-only)
