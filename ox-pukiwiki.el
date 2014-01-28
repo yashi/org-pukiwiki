@@ -63,7 +63,7 @@
     (latex-environment . org-pukiwiki-identity)
     (latex-fragment . org-pukiwiki-identity)
     (line-break . org-pukiwiki-identity)
-    (link . org-pukiwiki-identity)
+    (link . org-pukiwiki-link)
     (node-property . org-pukiwiki-identity)
     (paragraph . org-pukiwiki-identity)
     (plain-list . org-pukiwiki-plain-list)
@@ -226,6 +226,24 @@ contextual information."
       (insert "// ")
       (forward-line))
     (buffer-string)))
+
+
+;;; Links
+(defun org-pukiwiki-link (link desc info)
+  "Transcode a LINK object into Pukiwiki format.
+DESC is the description part of the link, or the empty string.
+INFO is a plist holding contextual information.
+
+Org's LINK object is documented in \"Hyperlinks\"."
+  (let ((type (org-element-property :type link))
+        (path (org-element-property :path link)))
+    (when (string= type "fuzzy")
+      (setq type nil))
+    (concat "[["
+            (when desc (concat desc ">"))
+            (when type (concat type ":"))
+            path
+            "]]")))
 
 ;;;###autoload
 (defun org-pukiwiki-export-as-pukiwiki (&optional async subtreep visible-only)

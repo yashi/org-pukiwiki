@@ -68,5 +68,18 @@
 // should work as expected
 "))
 
+
+;;; Link
+(ert-deftest test-ox-pukiwiki/link ()
+  "Test Links."
+
+  (org-pukiwiki-test-transcode-body
+   "[[http://example.com][example]]"
+   "[[example>http://example.com]]\n")
+
+  (org-pukiwiki-test-transcode-body
+   "[[http://example.com]]"
+   "[[http://example.com]]\n"))
+
 (provide 'test-ox-pukiwiki)
 ;;; test-ox-pukiwiki.el end here
