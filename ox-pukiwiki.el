@@ -299,8 +299,4 @@ Return output file name."
 
 (provide 'ox-pukiwiki)
 
-;; Local variables:
-;; generated-autoload-file: "org-loaddefs.el"
-;; End:
-
 ;;; ox-pukiwiki.el ends here
