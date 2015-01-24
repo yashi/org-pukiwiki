@@ -30,6 +30,7 @@
 
 ;;; Code:
 (require 'ox)
+(require 'cl-lib)
 
 (defgroup org-export-pukiwiki nil
   "Options for exporting Org mode files to Pukiwiki."
@@ -180,10 +181,10 @@ CONTENTS is the headline contents."
 		   org-element-block-name-alist))
     (org-element-keyword-interpreter keyword nil)))
 
-(setq ox-puki-a 0)
-(setq ox-puki-row 0)
-(setq ox-puki-cell 0)
-(setq ox-puki-header nil)
+(defvar ox-puki-a 0)
+(defvar ox-puki-row 0)
+(defvar ox-puki-cell 0)
+(defvar ox-puki-header nil)
 
 (defun org-pukiwiki-table (keyword contents info)
   "Transcode TABLE element into Pukiwiki format."
